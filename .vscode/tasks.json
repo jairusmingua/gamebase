@@ -1,0 +1,17 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build and Copy",
+            "type": "shell",
+            "command": "cd gameapp && flutter build apk && cp 'build/app/outputs/flutter-apk/app-release.apk' 'C:/Users/Jairus/Desktop/Production Raw Desktop'"
+        },
+        {
+            "label": "Copy apk",
+            "type": "shell",
+            "command": "cp 'gameapp/build/app/outputs/flutter-apk/app-release.apk' 'C:/Users/Jairus/Desktop/Production Raw Desktop'"
+        }
+    ]
+}
