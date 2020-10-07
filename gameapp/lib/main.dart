@@ -35,9 +35,17 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.w500,
             color:Colors.white,
           ),
-          headline1:TextStyle(
-            
-           color: Colors.red[600]
+          bodyText2: GoogleFonts.montserrat(
+            fontWeight: FontWeight.w700,
+            color:Colors.red[600]
+          ),
+          subtitle1: GoogleFonts.lato(
+            color:Colors.white,
+            fontSize: 12,
+          ),
+          headline1:GoogleFonts.montserrat(
+            fontWeight: FontWeight.w700,
+            color:Colors.white,
           ), 
         )
       ),
