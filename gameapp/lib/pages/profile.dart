@@ -19,7 +19,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    controller = TabController(vsync: this, length: 3);
+    controller = TabController(vsync: this, length: 2);
   }
 
   @override
@@ -42,36 +42,118 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
         ),
         body: CustomScrollView(slivers: <Widget>[
           SliverPersistentHeader(
-              delegate: ProfileView(maxExtent: 250, minExtent: 150)),
+              delegate: ProfileView(maxExtent: 350, minExtent: 150)),
           SliverFillRemaining(
             child: DefaultTabController(
-              length: 3,
+              length: 2,
               child: Scaffold(
                 appBar: AppBar(
                   
                   title: TabBar(
                     tabs: [
-                      Tab(icon: Icon(Icons.directions_car)),
-                      Tab(icon: Icon(Icons.directions_transit)),
-                      Tab(icon: Icon(Icons.directions_bike)),
+                     
+                      Tab(icon: Icon(Icons.favorite)),
+                      Tab(icon: Icon(Icons.star)),
                     ],
                   ),
                   
                 ),
-                body: TabBarView(
-                  children: [
-                    Icon(Icons.directions_car),
-                    Icon(Icons.directions_transit),
-                    Icon(Icons.directions_bike),
-                  ],
-                ),
+                // body: TabBarView(
+                //   children: [
+                //     FavoriteList(),
+                //     // Icon(Icons.directions_bike),
+                //     Icon(Icons.directions_bike),
+           
+                //   ],
+                // ),
               ),
             ),
           ),
+          SliverToBoxAdapter(
+            child: TabBarView(
+              controller: controller,
+                  children: [
+                    FavoriteList(),
+                    // Icon(Icons.directions_bike),
+                    Icon(Icons.directions_bike),
+           
+                  ],
+                ),
+          )
+          
         ]));
   }
 }
-
+class FavoriteList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+  GameList game = new GameList();
+    return(
+      GridView.count(
+          // Create a grid with 2 columns. If you change the scrollDirection to
+          // horizontal, this produces 2 rows.
+          crossAxisCount: 2,
+          // Generate 100 widgets that display their index in the List.
+          children: List.generate(100, (index) {
+            return Center(
+              child: Text(
+                'Item $index',
+                style: Theme.of(context).textTheme.headline5,
+              ),
+            );
+          }),
+        )
+    );
+  }
+}
+class ProfileHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(        
+        children: [
+          Container(
+                  margin: EdgeInsets.only(top:50),
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.contain,
+                        image: new NetworkImage(
+                            'https://avatars3.githubusercontent.com/u/18586619?s=460&u=30a1c6ecfa750c3ea4b86bdbbdfc87556ecdd164&v=4'),
+                      )),
+                ),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text("cipherxz",style: Theme.of(context).textTheme.bodyText1,),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        children:[
+                          Text("91"),
+                          Text("Favorites",style: Theme.of(context).textTheme.subtitle1,),
+                        ]
+                      ),
+                      Column(
+                        children:[
+                          Text("10"),
+                         Text("Reviews",style: Theme.of(context).textTheme.subtitle1,),
+                        ]
+                      )
+                    ],
+                  ),
+                )
+        ],
+    );
+  }
+}
 class ProfileView extends SliverPersistentHeaderDelegate {
   ProfileView({this.minExtent, @required this.maxExtent});
   final double minExtent;
@@ -82,27 +164,14 @@ class ProfileView extends SliverPersistentHeaderDelegate {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Positioned(
-          left: 16.0,
-          right: 16.0,
-          bottom: 16.0,
-          child: Text(
-            'Lorem ipsum',
-            style: TextStyle(
-              fontSize: 32.0,
-              color: Colors.white.withOpacity(titleOpacity(shrinkOffset)),
-            ),
-          ),
-        ),
+        ProfileHeader(),
+        
       ],
     );
   }
 
   double titleOpacity(double shrinkOffset) {
-    // simple formula: fade out text as soon as shrinkOffset > 0
     return 1.0 - max(0.0, shrinkOffset) / maxExtent;
-    // more complex formula: starts fading out text when shrinkOffset > minExtent
-    //return 1.0 - max(0.0, (shrinkOffset - minExtent)) / (maxExtent - minExtent);
   }
 
   @override
