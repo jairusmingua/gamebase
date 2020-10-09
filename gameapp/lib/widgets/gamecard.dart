@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import '../pages/game.dart';
-import '../class/gameinfo.dart';
+import 'package:gameapp/class/game.dart';
+import '../pages/gamepage.dart';
+
 
 class Gamecard extends StatelessWidget {
-  Gamecard({Key key, this.game, this.flexible = false}) : super(key: key);
-  final GameInfo game;
+  Gamecard({Key key, this.game, this.flexible = false,this.hasLabels=true}) : super(key: key);
+  final Game game;
   final bool flexible;
+  final bool hasLabels;
   @override
   Widget build(BuildContext context) {
     return Container(
         width: 150,
-        height: double.maxFinite,
+
         child: Card(
             // margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
             clipBehavior: Clip.antiAlias,
@@ -18,19 +20,19 @@ class Gamecard extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Game(game: game)),
+                  MaterialPageRoute(builder: (context) => GamePage(game: game)),
                 );
               },
               child: Stack(overflow: Overflow.visible, children: <Widget>[
                 Container(
                   width: double.infinity,
                   child: Image.network(
-                    game.imgUrl,
+                    game.imageUrl,
                     height: double.infinity,
                     fit: BoxFit.cover,
                   ),
                 ),
-                Positioned(
+                (hasLabels?Positioned(
                   bottom: 0,
                   right: 0,
                   left: 0,
@@ -44,8 +46,8 @@ class Gamecard extends StatelessWidget {
                     )),
                     // color: Colors.black38,
                   ),
-                ),
-                Positioned(
+                ):Container()),
+                (hasLabels?Positioned(
                   bottom: 10,
                   left: 10,
                   right: 10,
@@ -64,14 +66,14 @@ class Gamecard extends StatelessWidget {
                       ),
                       Container(
                           width: 100,
-                          child: Text(game.gameDescription,
+                          child: Text(game.gameTitle,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold))),
                     ],
                   ),
-                ),
+                ):Container()),
               ]),
             ),
             elevation: 5));

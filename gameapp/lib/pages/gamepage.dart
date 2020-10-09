@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gameapp/class/game.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../class/gameinfo.dart';
-class Game extends StatelessWidget {
-  Game({Key key, this.game}) : super(key: key);
-  final GameInfo game;
+// import '../class/gameinfo.dart';
+class GamePage extends StatelessWidget {
+  GamePage({Key key, this.game}) : super(key: key);
+  final Game game;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +24,7 @@ class Game extends StatelessWidget {
                           image: DecorationImage(
                             fit: BoxFit.fill,
                             image: new NetworkImage(
-                                game.imgUrl),
+                                game.imageUrl),
                           )),
                     ),
                   ),
@@ -36,7 +37,7 @@ class Game extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.only(bottom:20)),
                 Text(
-                  game.gameStory,
+                  game.synopsis,
                   style: GoogleFonts.montserrat(
                   textStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.normal)),
                   textAlign: TextAlign.justify,
