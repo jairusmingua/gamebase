@@ -1,19 +1,33 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:gameapp/pages/login.dart';
+import 'package:gameapp/widgets/loginmain.dart';
+import 'package:gameapp/widgets/registermain.dart';
 import 'package:google_fonts/google_fonts.dart';
 //pages
 import './pages/dashboard.dart';
-
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  final storage = FlutterSecureStorage();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+       
+        initialRoute: "/dashboard",
+        routes: {
+          "/dashboard":(context)=>Dashboard(),
+          "/notice": (context) => Login(),
+          "/login": (context) => LoginMain(),
+          "/register": (context) => RegisterMain(),
+     
+        },
+      
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -46,6 +60,11 @@ class MyApp extends StatelessWidget {
           headline1:GoogleFonts.montserrat(
             fontWeight: FontWeight.w700,
             color:Colors.white,
+          ), 
+          headline2:GoogleFonts.montserrat(
+            fontWeight: FontWeight.w700,
+            color:Colors.white,
+            fontSize: 25
           ), 
         )
       ),

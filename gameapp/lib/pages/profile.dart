@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gameapp/class/game.dart';
 import 'package:gameapp/class/gameinfo.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,9 +19,11 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   TabController controller;
+  // FlutterSecureStorage _storage = FlutterSecureStorage();
   @override
   void initState() {
     super.initState();
+
     controller = TabController(vsync: this, length: 2);
   }
 
@@ -34,6 +37,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Theme.of(context).backgroundColor,
           centerTitle: true,
           // toolbarHeight: ,
@@ -50,6 +54,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   SliverAppBar(
                     collapsedHeight: 300,
                     expandedHeight: 300,
+                    automaticallyImplyLeading: false,
                     backgroundColor: Theme.of(context).backgroundColor,
                     flexibleSpace: ProfileHeader(),
                   ),
@@ -78,23 +83,52 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 }
 
 
-class FavoriteList extends StatelessWidget {
+
+class FavoriteList extends StatefulWidget {
+  
   @override
-  Widget build(BuildContext context) {
-    GameList game = new GameList();
-    return (GridView.count(
-      // Create a grid with 2 columns. If you change the scrollDirection to
-      // horizontal, this produces 2 rows.
-      crossAxisCount: 3,
-      childAspectRatio: 271 / 377,
-      // Generate 100 widgets that display their index in the List.
-      children: List.generate(1, (index) {
-        return Gamecard(game: game.Games[index]);
-      }),
-    ));
-  }
+  _FavoriteListState createState() => _FavoriteListState();
 }
 
+class _FavoriteListState extends State<FavoriteList> {
+  FlutterSecureStorage _storage;
+  @override
+  void initState(){
+    super.initState();
+    _storage = FlutterSecureStorage();
+  }
+  Future<List<Game>>fetchFavorites()async{
+    var token = await _storage.read(key: "token");
+    Map<String, String> allValues = await _storage.readAll();
+    var data = fetchUserFavorites(token);
+    return data;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // GameList game = new GameList();
+    // getToken();
+    return FutureBuilder(
+      future:fetchFavorites(),
+      builder: (context,snapshot){
+         if (snapshot.hasError) print(snapshot.error);
+
+                  return snapshot.hasData
+                      ? GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 271/377
+                      ), 
+                      itemCount: snapshot.data.length,
+                        itemBuilder: (context,index){
+                          return Gamecard(game:snapshot.data[index]);
+                        })
+                      : Center(
+                          child: CircularProgressIndicator(),
+                        );
+      }
+    );
+  }
+}
 class ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

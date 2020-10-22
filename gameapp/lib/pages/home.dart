@@ -1,16 +1,22 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gameapp/class/game.dart';
 import '../class/gamelist.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/gamecard.dart';
+import 'login.dart';
 // import 'game.dart';
 
 class Home extends StatelessWidget {
+  final _storage = FlutterSecureStorage();
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-          onRefresh: ()async{await Future.delayed(Duration(seconds: 10));},
-          child: CustomScrollView(
+      onRefresh: () async {
+        await Future.delayed(Duration(seconds: 10));
+      },
+      child: CustomScrollView(
         slivers: <Widget>[
           SliverList(
               delegate: SliverChildListDelegate([
@@ -25,18 +31,36 @@ class Home extends StatelessWidget {
                         textStyle: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.w700,
-                            color: Theme.of(context).textTheme.headline1.color)),
+                            color:
+                                Theme.of(context).textTheme.headline1.color)),
                   ),
-                  Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: new NetworkImage(
-                              'https://avatars3.githubusercontent.com/u/18586619?s=460&u=30a1c6ecfa750c3ea4b86bdbbdfc87556ecdd164&v=4'),
-                        )),
+                  RawMaterialButton(
+                    onPressed: ()async {
+                      String value = await _storage.read(key: "isLoggedIn");
+                      print(value);
+                        // Navigator.pushNamed(context,"/notice");
+                      if(value=="true"){
+                        
+                        
+                      }else{
+                        Navigator.pushNamed(context,"/notice");
+
+                      }
+                    },
+                    // elevation: 2.0,  
+                    constraints: BoxConstraints.expand(width: 50,height:50),
+                    // shape: BoxBorder(),
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: new NetworkImage(
+                                'https://avatars3.githubusercontent.com/u/18586619?s=460&u=30a1c6ecfa750c3ea4b86bdbbdfc87556ecdd164&v=4'),
+                          )),
+                    ),
                   ),
                 ],
               ),
@@ -55,21 +79,8 @@ class Home extends StatelessWidget {
                         color: Theme.of(context).textTheme.bodyText1.color)),
               ),
             ),
-           
           ])),
-          // Searchbar(),
           Newslist(),
-          // LayoutBuilder(
-          //   builder: (context,constraint){
-          //       if(constraint.maxWidth>600){
-          //         return Newslist();
-          //       }else{
-          //         return Newslist(count: 5,);
-          //       }
-
-          //   },
-          // )
-          // Cardlist(title: "Trending", apiroute: "/trending"),
         ],
       ),
     );
@@ -91,10 +102,9 @@ class Cardlist extends StatefulWidget {
 class _CardlistState extends State<Cardlist> {
   Future<List<Game>> futureGame;
   @override
-  void initState(){
+  void initState() {
     super.initState();
     futureGame = fetchGameList("game/topgames");
-
   }
 
   @override
@@ -120,20 +130,22 @@ class _CardlistState extends State<Cardlist> {
             children: <Widget>[
               FutureBuilder<List<Game>>(
                 future: fetchGameList("game/topgames"),
-                builder: (context,snapshot){
-                      if (snapshot.hasError) print(snapshot.error);
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) print(snapshot.error);
 
-                      return snapshot.hasData
-                          ? ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, index) {
-                    return Gamecard(game: snapshot.data[index]);
-                  }):Center(child: CircularProgressIndicator(),);
-                        
+                  return snapshot.hasData
+                      ? ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, index) {
+                            return Gamecard(game: snapshot.data[index]);
+                          })
+                      : Center(
+                          child: CircularProgressIndicator(),
+                        );
                 },
               ),
-    
+
               // Positioned(
               //   right: 0,
               //   bottom: 0,
@@ -156,32 +168,30 @@ class _CardlistState extends State<Cardlist> {
       ],
     );
   }
-
 }
 
 class Newslist extends StatelessWidget {
   Newslist({Key key}) : super(key: key);
-  
-  
+
   @override
   Widget build(BuildContext context) {
-    int count =2;
+    int count = 2;
     GameList game = new GameList();
-    MediaQueryData query; 
+    MediaQueryData query;
     query = MediaQuery.of(context);
     int ratio = 274;
-    if(((query.size.width.toInt()~/ratio)+1)>7){
+    if (((query.size.width.toInt() ~/ ratio) + 1) > 7) {
       count = 7;
-    }else if(((query.size.width.toInt()~/ratio)+1)<2){
-      count =2;
-    }else{
-      count = (query.size.width.toInt()~/ratio)+1;
+    } else if (((query.size.width.toInt() ~/ ratio) + 1) < 2) {
+      count = 2;
+    } else {
+      count = (query.size.width.toInt() ~/ ratio) + 1;
     }
-    print((query.size.width.toInt()~/ratio)+1);
+    print((query.size.width.toInt() ~/ ratio) + 1);
     print(count);
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount:count,
+        crossAxisCount: count,
         // mainAxisSpacing: 1,
         // crossAxisSpacing: 5,
       ),

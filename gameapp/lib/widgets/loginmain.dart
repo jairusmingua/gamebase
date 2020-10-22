@@ -1,0 +1,144 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gameapp/widgets/txtbox.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+
+class LoginMain extends StatefulWidget {
+  const LoginMain({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _LoginMainState createState() => _LoginMainState();
+}
+
+class _LoginMainState extends State<LoginMain> {
+  String username;
+  String password;
+  bool isLoading =false;
+  final storage = FlutterSecureStorage();
+  void _changeUsername(String _username) {
+    setState(() {
+      username = _username;
+    });
+  }
+
+  void _changePassword(String _password) {
+    setState(() {
+      password = _password;
+    });
+  }
+  
+  void authenticate() async {
+    setState(()=>isLoading=true);
+    final response = await http.post(
+        'https://gamebasebackend.azurewebsites.net/token',
+        headers: <String, String>{
+          "Content-type": "application/x-www-form-urlencoded",
+          "Accept": "application/json"
+        },
+        body: <String, String>{
+          "grant_type": "password",
+          "username": username,
+          "password": password
+        });
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      final parsed = jsonDecode(response.body);
+      print(parsed);
+      await storage.write(key: "token", value: parsed['access_token']);
+      await storage.write(key: "isLoggedIn", value: "true");
+      setState(()=>isLoading=false);
+      Navigator.pushNamed(context,"/dashboard");
+    }else if(response.statusCode==400){
+      
+    }else{
+      throw Exception('Failed to load Games');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
+      body: Stack(children: [
+        Container(
+            height: double.infinity,
+            width: double.infinity,
+            child: Image.asset(
+              'images/gamebg.webp',
+              fit: BoxFit.cover,
+            )),
+        Container(
+          height: double.infinity,
+          width: double.infinity,
+          color: Colors.black87,
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(30, 50, 30, 50),
+          child: Container(
+            alignment: Alignment.topLeft,
+            height: double.infinity,
+            width: double.infinity,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                // mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(padding: EdgeInsets.symmetric(vertical: 20)),
+                  Text(
+                    "gamebase",
+                    textAlign: TextAlign.left,
+                    style: GoogleFonts.montserrat(
+                        color: Colors.white,
+                        fontSize: 40,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  Padding(padding: EdgeInsets.symmetric(vertical: 20)),
+                  TxtBox(
+                    placeholder: "Username",
+                    onChanged: _changeUsername,
+                  ),
+                  TxtBox(
+                    placeholder: "Password",
+                    onChanged: _changePassword,
+                    isPassword: true,
+                  ),
+                  Padding(padding: EdgeInsets.symmetric(vertical: 40)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      RaisedButton(
+                        color: Colors.black,
+                        onPressed: authenticate,
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            "Login",
+                            style: GoogleFonts.montserrat(
+                                color: Colors.red,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: isLoading?CircularProgressIndicator():Center(),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+}
