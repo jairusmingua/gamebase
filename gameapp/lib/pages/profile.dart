@@ -95,13 +95,7 @@ class _FavoriteListState extends State<FavoriteList> {
   @override
   void initState(){
     super.initState();
-    _storage = FlutterSecureStorage();
-  }
-  Future<List<Game>>fetchFavorites()async{
-    var token = await _storage.read(key: "token");
-    Map<String, String> allValues = await _storage.readAll();
-    var data = fetchUserFavorites(token);
-    return data;
+    
   }
 
   @override
@@ -109,7 +103,7 @@ class _FavoriteListState extends State<FavoriteList> {
     // GameList game = new GameList();
     // getToken();
     return FutureBuilder(
-      future:fetchFavorites(),
+      future:fetchUserFavorites(),
       builder: (context,snapshot){
          if (snapshot.hasError) print(snapshot.error);
 

@@ -4,87 +4,85 @@ import 'package:flutter/material.dart';
 import 'package:gameapp/class/game.dart';
 import 'package:gameapp/widgets/gamecard.dart';
 import 'package:gameapp/widgets/gamepageappbar.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import '../class/game.dart';
+import '../widgets/favoriteicon.dart';
 
-// import '../class/gameinfo.dart';
-class GamePage extends StatelessWidget {
+class GamePage extends StatefulWidget {
   GamePage({Key key, this.game}) : super(key: key);
   final Game game;
 
+  @override
+  _GamePageState createState() => _GamePageState();
+}
 
+class _GamePageState extends State<GamePage> {
+  Game _game;
+  @override
+  void initState() {
+    super.initState();
+    fetchGameById(widget.game.gameId).then((value) => {
+      setState((){
+        _game=value;
 
+      })
+
+    });
+    
+  } 
   @override
   Widget build(BuildContext context) {
-    // print(controller.offset);
-    return Scaffold(
-        // appBar: AppBar(
-        //   backgroundColor: Colors.black,
-        // ),
-        // backgroundColor: Colors.black,
-        body: Stack(
-          // color: Colors.black,
-          children: [
-            CustomScrollView(
-            // controller: controller,
-            slivers:[
-             
-              
-             
-              SliverPersistentHeader(
-                delegate: GamePageAppBar(game:game),
-                floating: true,
-                pinned:true ,
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    GamePageHeader(game: game),
-                    ReviewBody()
-                  ]
-                )
-              ),
-            
-             
-        
-              ]
-            ),
-          
-            // Positioned(
-            //   bottom:0,left:0,right:0,
-            //   child:Container(
-            //     height: 80,
-            //     color: Colors.red,
-            //   ) ,
-            // ),
-          ]
-          )
-        );
+    if(_game ==null){
+      return Center(child:CircularProgressIndicator());
+    }else{
+
+    return 
+            Scaffold(
+          body: Stack(children: [
+        CustomScrollView(slivers: [
+          SliverPersistentHeader(
+            delegate: GamePageAppBar(
+                game:widget.game,
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: FavoriteIcon(game: _game,),
+                    )
+                  ],
+                )),
+            floating: true,
+            pinned: true,
+          ),
+          SliverList(
+              delegate: SliverChildListDelegate(
+                  [GamePageHeader(game: widget.game),  Text("Reviews", style: Theme.of(context).textTheme.headline2),])),
+          SliverFixedExtentList(delegate: SliverChildBuilderDelegate(
+            (context,index)=>ReviewCards()
+          ),itemExtent: 200)
+        ]),
+      ])
+    );
+    }
   }
 }
+
 class ReviewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding:EdgeInsets.all(20),
-      height: 400,
-      color:Colors.black,
-      child: CustomScrollView(
-        slivers:[
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                Text("Reviews",style:Theme.of(context).textTheme.headline2 ),
-                
-              ]
-            ),
-          ),
-          
-        ]
-      ),
+    return Column(
+       children:[
+        Text("Reviews", style: Theme.of(context).textTheme.headline2),
+        Text("Reviews", style: Theme.of(context).textTheme.headline2),
+        
+        
+      ],
     );
   }
 }
+
 class GamePageHeader extends StatelessWidget {
   GamePageHeader({this.game});
   final Game game;
@@ -99,7 +97,7 @@ class GamePageHeader extends StatelessWidget {
       child: Stack(children: [
         Positioned.fill(
           // width: double.infinity,
-          child: Image.network(game.imageUrl,fit:BoxFit.fitWidth),
+          child: Image.network(game.imageUrl, fit: BoxFit.fitWidth),
         ),
         Positioned.fill(
           child: BackdropFilter(
@@ -110,19 +108,19 @@ class GamePageHeader extends StatelessWidget {
           ),
         ),
         Positioned(
-          left:0,
-          right:0,
-          bottom:0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           child: Container(
-                    height: 300,
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                      colors: [Colors.black, Colors.transparent],
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                    )),
-                    // color: Colors.black38,
-                  ),
+            height: 300,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+              colors: [Colors.black, Colors.transparent],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+            )),
+            // color: Colors.black38,
+          ),
         ),
         Container(
           child: Center(
@@ -176,13 +174,12 @@ class GamePageHeader extends StatelessWidget {
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical:20,horizontal:20),
-                  child:Text(
-                      game.gameTitle,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headline2,
-                    ),
-                
+                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  child: Text(
+                    game.gameTitle,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline2,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(20),
@@ -197,7 +194,8 @@ class GamePageHeader extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Column(children: [
                     Row(children: [
                       Text(
@@ -207,7 +205,6 @@ class GamePageHeader extends StatelessWidget {
                         overflow: TextOverflow.fade,
                       ),
                       Text(
-                        
                         date,
                         style: Theme.of(context).textTheme.subtitle1,
                         textAlign: TextAlign.justify,
@@ -217,7 +214,8 @@ class GamePageHeader extends StatelessWidget {
                   ]),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Column(children: [
                     Row(children: [
                       Text(
@@ -227,7 +225,6 @@ class GamePageHeader extends StatelessWidget {
                         overflow: TextOverflow.fade,
                       ),
                       Text(
-                        
                         'N/A',
                         style: Theme.of(context).textTheme.subtitle1,
                         textAlign: TextAlign.justify,
@@ -236,7 +233,9 @@ class GamePageHeader extends StatelessWidget {
                     ]),
                   ]),
                 ),
-                Padding(padding: EdgeInsets.only(top:20),)
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                )
               ],
             ),
           ),
@@ -245,8 +244,6 @@ class GamePageHeader extends StatelessWidget {
     );
   }
 }
-
-
 
 class ReviewList extends StatelessWidget {
   @override
@@ -264,54 +261,61 @@ class ReviewCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Game game = new Game(
-      gameTitle:'Call of Duty: Ghosts',
-      imageUrl:'https://vignette.wikia.nocookie.net/callofduty/images/9/9b/Call_of_Duty_Ghosts_cover.jpg/revision/latest/top-crop/width/360/height/450?cb=20130501214026',
+      gameTitle: 'Call of Duty: Ghosts',
+      imageUrl:
+          'https://vignette.wikia.nocookie.net/callofduty/images/9/9b/Call_of_Duty_Ghosts_cover.jpg/revision/latest/top-crop/width/360/height/450?cb=20130501214026',
       synopsis: "Call of Duty: Ghosts is a 2013 first-person shooter",
-
     );
     return Container(
       height: 150,
-      margin:EdgeInsets.all(5),
+      margin: EdgeInsets.all(5),
       color: Theme.of(context).backgroundColor,
       child: Row(
         children: [
           Flexible(
-            fit: FlexFit.tight,
-            flex: 1,
-            child: Gamecard(game:game,hasLabels: false,)
-          ),
+              fit: FlexFit.tight,
+              flex: 1,
+              child: Gamecard(
+                game: game,
+                hasLabels: false,
+              )),
           Flexible(
-            fit:FlexFit.tight,
-            flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children:[
-                  Padding(
-                    padding: const EdgeInsets.only(bottom:20),
-                    child: Text("Call Of Duty: Ghosts"),
-                  ),
-                  Text("Call of Duty: Ghosts is a 2013 first-person shooter video game developed by Infinity Ward and published by Activision, it is the tenth major installment",style:Theme.of(context).textTheme.subtitle1,overflow: TextOverflow.clip,),
-                  
-                ]
-              ),
-            )
-          ),
+              fit: FlexFit.tight,
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Text("Call Of Duty: Ghosts"),
+                      ),
+                      Text(
+                        "Call of Duty: Ghosts is a 2013 first-person shooter video game developed by Infinity Ward and published by Activision, it is the tenth major installment",
+                        style: Theme.of(context).textTheme.subtitle1,
+                        overflow: TextOverflow.clip,
+                      ),
+                    ]),
+              )),
           Flexible(
-            fit:FlexFit.tight,
-            flex: 1,
-            child: Container(
-              // color:Colors.yellow,
-              child: Column(
-                  
-                  mainAxisAlignment: MainAxisAlignment.center,
-                            children: [Column(
-                  children:[ Icon(Icons.star,size: 40,color: Colors.yellow,),Text("4/5")]),
-                            ]),
-            )
-          )
+              fit: FlexFit.tight,
+              flex: 1,
+              child: Container(
+                // color:Colors.yellow,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(children: [
+                        Icon(
+                          Icons.star,
+                          size: 40,
+                          color: Colors.yellow,
+                        ),
+                        Text("4/5")
+                      ]),
+                    ]),
+              ))
         ],
       ),
     );
