@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gameapp/class/user.dart';
 import 'package:gameapp/widgets/txtbox.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -34,31 +35,15 @@ class _LoginMainState extends State<LoginMain> {
   
   void authenticate() async {
     setState(()=>isLoading=true);
-    final response = await http.post(
-        'https://gamebasebackend.azurewebsites.net/token',
-        headers: <String, String>{
-          "Content-type": "application/x-www-form-urlencoded",
-          "Accept": "application/json"
-        },
-        body: <String, String>{
-          "grant_type": "password",
-          "username": username,
-          "password": password
-        });
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      final parsed = jsonDecode(response.body);
-      print(parsed);
-      await storage.write(key: "token", value: parsed['access_token']);
-      await storage.write(key: "isLoggedIn", value: "true");
+    Map<String,dynamic>fields = {
+      "username":username,
+      "password":password
+    };
+    authenticateUser(fields).then((value){
       setState(()=>isLoading=false);
       Navigator.pushNamed(context,"/dashboard");
-    }else if(response.statusCode==400){
-      
-    }else{
-      throw Exception('Failed to load Games');
-    }
+    
+    });
   }
 
   @override

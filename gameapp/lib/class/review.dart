@@ -53,6 +53,29 @@ Future<List<Review>> fetchReviewById(String id)async{
     throw Exception('Failed to load Games');
   } 
 }
+Future<Map<String,dynamic>> postReview(Map<String,dynamic>review,String gameId)async{
+  FlutterSecureStorage _storage = FlutterSecureStorage();
+  var token = await _storage.read(key:"token");
+  print(token);
+  Map<String,String> headers ={"Content-type": "application/json", "Accept": "application/json","Authorization":"Bearer "+token};
+  
+  // token = "goWWORBtWQqeXXqjC179meFxiIvCuhchvOlDTuRMvccLo2NS6MOlXFg6iIaaiqk0hI0VI7tWAcyeO8LlzzTHB_r48uX2nzaQZKXcHKB1z6hJbvK-VqWKoSNIbpJYS-DuC6dyztCtwyohH5on5I5dlrIxLQW8HzBz1gtGCP-OhQwalRlKCSg36aR0Uh5ZyVkUV_Gbttnc06muHWIIoIIIMsL-llGWo4MiU79Wq4Gz7A-P6sNk6hWckkpYGEWFkmMl";
+  //Map<String,String> headers = {"Content-type": "application/json", "Accept": "application/json"};
+  // token = "goWWORBtWQqeXXqjC179meFxiIvCuhchvOlDTuRMvccLo2NS6MOlXFg6iIaaiqk0hI0VI7tWAcyeO8LlzzTHB_r48uX2nzaQZKXcHKB1z6hJbvK-VqWKoSNIbpJYS-DuC6dyztCtwyohH5on5I5dlrIxLQW8HzBz1gtGCP-OhQwalRlKCSg36aR0Uh5ZyVkUV_Gbttnc06muHWIIoIIIMsL-llGWo4MiU79Wq4Gz7A-P6sNk6hWckkpYGEWFkmMl";
+  final response = await http.post('https://gamebasebackend.azurewebsites.net/api/review/'+gameId, 
+  headers:headers,
+  body:jsonEncode(review));
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    return {"success":true};
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw {"success":false};
+
+  } 
+}
 Future<List<Review>> fetchUserReview()async{
   
   FlutterSecureStorage _storage = FlutterSecureStorage();

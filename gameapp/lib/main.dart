@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           "/notice": (context) => Login(),
           "/login": (context) => LoginMain(),
           "/register": (context) => RegisterMain(),
-     
+          
         },
       
       theme: ThemeData(
