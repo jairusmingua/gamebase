@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gameapp/class/game.dart';
 import 'package:gameapp/class/gameinfo.dart';
+import 'package:gameapp/class/review.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'home.dart';
 import '../widgets/gamecard.dart';
@@ -198,27 +199,45 @@ class TabDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => tabBar.preferredSize.height;
 }
 
-class ReviewList extends StatelessWidget {
+class ReviewList extends StatefulWidget {
+  @override
+  _ReviewListState createState() => _ReviewListState();
+}
+
+class _ReviewListState extends State<ReviewList> {
   @override
   Widget build(BuildContext context) {
-    return (ListView.builder(
-        // padding: const EdgeInsets.all(8),
-        itemCount: 5,
+    return FutureBuilder(
+      future: fetchUserReview(),
+      builder: (context,AsyncSnapshot<List<Review>>snapshot){
+          if (snapshot.hasError) print(snapshot.error);
+
+                  return snapshot.hasData
+                      ? ListView.builder(
+        padding: const EdgeInsets.all(8),
+        itemCount: snapshot.data.length,
         itemBuilder: (BuildContext context, int index) {
-          return ReviewCards();
-        }));
+          return ReviewCards(review:snapshot.data[index]);
+        })
+                      : Center(
+                          child: CircularProgressIndicator(),
+                        );
+      },
+    );
+    // return (ListView.builder(
+    //     // padding: const EdgeInsets.all(8),
+    //     itemCount: 5,
+    //     itemBuilder: (BuildContext context, int index) {
+    //       return ReviewCards();
+    //     }));
   }
 }
 
 class ReviewCards extends StatelessWidget {
+  ReviewCards({this.review});
+  final Review review;
   @override
   Widget build(BuildContext context) {
-    Game game = new Game(
-      gameTitle:'Call of Duty: Ghosts',
-      imageUrl:'https://vignette.wikia.nocookie.net/callofduty/images/9/9b/Call_of_Duty_Ghosts_cover.jpg/revision/latest/top-crop/width/360/height/450?cb=20130501214026',
-      synopsis: "Call of Duty: Ghosts is a 2013 first-person shooter",
-
-    );
     return Container(
       height: 150,
       margin:EdgeInsets.all(5),
@@ -228,7 +247,7 @@ class ReviewCards extends StatelessWidget {
           Flexible(
             fit: FlexFit.tight,
             flex: 1,
-            child: Gamecard(game:game,hasLabels: false,)
+            child: Gamecard(game:review.game,hasLabels: false,)
           ),
           Flexible(
             fit:FlexFit.tight,
@@ -241,9 +260,9 @@ class ReviewCards extends StatelessWidget {
                 children:[
                   Padding(
                     padding: const EdgeInsets.only(bottom:20),
-                    child: Text("Call Of Duty: Ghosts"),
+                    child: Text(review.game.gameTitle),
                   ),
-                  Text("Call of Duty: Ghosts is a 2013 first-person shooter video game developed by Infinity Ward and published by Activision, it is the tenth major installment",style:Theme.of(context).textTheme.subtitle1,overflow: TextOverflow.clip,),
+                  Text(review.reviewText,style:Theme.of(context).textTheme.subtitle1,overflow: TextOverflow.clip,),
                   
                 ]
               ),
@@ -258,7 +277,7 @@ class ReviewCards extends StatelessWidget {
                   
                   mainAxisAlignment: MainAxisAlignment.center,
                             children: [Column(
-                  children:[ Icon(Icons.star,size: 40,color: Colors.yellow,),Text("4/5")]),
+                  children:[ Icon(Icons.star,size: 40,color: Colors.yellow,),Text(review.starRating.toString()+"/5")]),
                             ]),
             )
           )

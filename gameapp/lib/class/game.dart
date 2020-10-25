@@ -12,7 +12,8 @@ class Game{
   final String releaseDate;
   final String synopsis;
   final bool isFavorite;
-  Game({this.gameId,this.gameTitle,this.imageUrl,this.matureRating,this.releaseDate,this.synopsis,this.isFavorite});
+  final String developer;
+  Game({this.gameId,this.gameTitle,this.imageUrl,this.matureRating,this.releaseDate,this.synopsis,this.isFavorite,this.developer});
   
   factory Game.fromJson(Map<String,dynamic>json){
     return Game(
@@ -22,7 +23,8 @@ class Game{
       matureRating: json["MatureRating"],
       releaseDate: json["GameReleased"],
       synopsis: json["Synopsis"],
-      isFavorite:json["isFavorite"]
+      isFavorite:json["isFavorite"],
+      developer: json["Developer"]
     );
   }
 }

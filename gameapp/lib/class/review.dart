@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import './game.dart';
@@ -31,8 +32,12 @@ class Review{
     );
   }
 }
+List<Review> parseReviews(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
 
-Future<Review> fetchReviewById(String id)async{
+  return parsed.map<Review>((json) => Review.fromJson(json)).toList();
+}
+Future<List<Review>> fetchReviewById(String id)async{
   
   
   Map<String,String> headers = {"Content-type": "application/json", "Accept": "application/json"};
@@ -41,14 +46,34 @@ Future<Review> fetchReviewById(String id)async{
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
-    return Review.fromJson(jsonDecode(response.body));
+    return compute(parseReviews,response.body);
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
     throw Exception('Failed to load Games');
   } 
 }
-
+Future<List<Review>> fetchUserReview()async{
+  
+  FlutterSecureStorage _storage = FlutterSecureStorage();
+  var token = await _storage.read(key:"token");
+  print(token);
+  Map<String,String> headers ={"Content-type": "application/json", "Accept": "application/json","Authorization":"Bearer "+token};
+  
+  // token = "goWWORBtWQqeXXqjC179meFxiIvCuhchvOlDTuRMvccLo2NS6MOlXFg6iIaaiqk0hI0VI7tWAcyeO8LlzzTHB_r48uX2nzaQZKXcHKB1z6hJbvK-VqWKoSNIbpJYS-DuC6dyztCtwyohH5on5I5dlrIxLQW8HzBz1gtGCP-OhQwalRlKCSg36aR0Uh5ZyVkUV_Gbttnc06muHWIIoIIIMsL-llGWo4MiU79Wq4Gz7A-P6sNk6hWckkpYGEWFkmMl";
+  //Map<String,String> headers = {"Content-type": "application/json", "Accept": "application/json"};
+  // token = "goWWORBtWQqeXXqjC179meFxiIvCuhchvOlDTuRMvccLo2NS6MOlXFg6iIaaiqk0hI0VI7tWAcyeO8LlzzTHB_r48uX2nzaQZKXcHKB1z6hJbvK-VqWKoSNIbpJYS-DuC6dyztCtwyohH5on5I5dlrIxLQW8HzBz1gtGCP-OhQwalRlKCSg36aR0Uh5ZyVkUV_Gbttnc06muHWIIoIIIMsL-llGWo4MiU79Wq4Gz7A-P6sNk6hWckkpYGEWFkmMl";
+  final response = await http.get('https://gamebasebackend.azurewebsites.net/api/review/user', headers:headers);
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    return compute(parseReviews,response.body);
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load Games');
+  } 
+}
 
 
 //  {
