@@ -7,11 +7,14 @@ import 'package:google_fonts/google_fonts.dart';
 //pages
 import './pages/dashboard.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 void main() {
+
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+
   final storage = FlutterSecureStorage();
   // This widget is the root of your application.
   @override

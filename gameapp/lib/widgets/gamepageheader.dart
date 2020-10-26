@@ -18,19 +18,24 @@ class GamePageHeader extends StatelessWidget {
       child: Stack(children: [
         Positioned.fill(
           // width: double.infinity,
-          child: Image.network(game.imageUrl, fit: BoxFit.fitWidth),
+          child: ImageFiltered(
+            imageFilter: ImageFilter.blur(sigmaX:20,sigmaY:20),
+            child: Image.network(
+              game.imageUrl, 
+              fit: BoxFit.fitWidth
+              )),
         ),
-        Positioned(
-          child: ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-              child: Container(
-                height: double.infinity,
-                color: Colors.black54,
-              ),
-            ),
-          ),
-        ),
+        // Positioned(
+        //   child: ClipRect(
+        //     child: BackdropFilter(
+        //       filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        //       child: Container(
+        //         height: double.infinity,
+        //         color: Colors.black54,
+        //       ),
+        //     ),
+        //   ),
+        // ),
         Positioned(
           left: 0,
           right: 0,

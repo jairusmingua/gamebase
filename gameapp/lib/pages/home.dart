@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gameapp/class/game.dart';
+import 'package:gameapp/class/user.dart';
 import '../class/gamelist.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/gamecard.dart';
@@ -12,6 +13,7 @@ class Home extends StatelessWidget {
   final _storage = FlutterSecureStorage();
   @override
   Widget build(BuildContext context) {
+    User user = User(imgUrl:"https://firebasestorage.googleapis.com/v0/b/gamebase-f0578.appspot.com/o/001-panda%20bear.png?alt=media&token=8b14c2bd-770c-40e4-97af-ecd79412431a");
     return RefreshIndicator(
       onRefresh: () async {
         await Future.delayed(Duration(seconds: 10));
@@ -26,7 +28,7 @@ class Home extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Games",
+                    "gamebase",
                     style: GoogleFonts.montserrat(
                         textStyle: TextStyle(
                             fontSize: 30,
@@ -53,13 +55,16 @@ class Home extends StatelessWidget {
                     child: Container(
                       height: 50,
                       width: 50,
+                      
                       decoration: BoxDecoration(
+                          color: Colors.black,
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             fit: BoxFit.fill,
                             image: new NetworkImage(
-                                'https://avatars3.githubusercontent.com/u/18586619?s=460&u=30a1c6ecfa750c3ea4b86bdbbdfc87556ecdd164&v=4'),
+                               user.imgUrl),
                           )),
+                        
                     ),
                   ),
                 ],

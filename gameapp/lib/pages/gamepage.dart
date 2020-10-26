@@ -21,7 +21,7 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
   Game _game;
-
+  final GlobalKey<_ReviewBodyState> _reviewBodyState = GlobalKey<_ReviewBodyState>();
   @override
   void initState() {
     super.initState();
@@ -31,7 +31,9 @@ class _GamePageState extends State<GamePage> {
           })
         });
   }
-
+  void _refreshList()async{
+    _reviewBodyState.currentState.refreshReviews();
+  }
   @override
   Widget build(BuildContext context) {
     if (_game == null) {
@@ -41,10 +43,11 @@ class _GamePageState extends State<GamePage> {
         backgroundColor: Theme.of(context).backgroundColor,
         floatingActionButton: FloatingActionButton(
           onPressed: (){
+            
              Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ReviewPage(game:_game)),
-                );
+                  MaterialPageRoute(builder: (context) => ReviewPage(game:_game,onFinish:_refreshList)),
+                ).then((value){_refreshList();});
           },
           child: Icon(Icons.create),
           backgroundColor: Colors.red,
@@ -63,6 +66,7 @@ class _GamePageState extends State<GamePage> {
                         actions: [
                           FavoriteIcon(game: _game),
                         ],
+                        elevation: 0,
                       ),
                     )),
                 SliverAppBar(
@@ -107,6 +111,7 @@ class _GamePageState extends State<GamePage> {
             // body: Container(height:40,child: Text("hello"))
             // ),
             body: ReviewBody(
+              key:_reviewBodyState,
               game: _game,
             )),
       );
@@ -115,7 +120,7 @@ class _GamePageState extends State<GamePage> {
 }
 
 class ReviewBody extends StatefulWidget {
-  ReviewBody({this.game});
+  ReviewBody({Key key,this.game}):super(key:key);
   final Game game;
   @override
   _ReviewBodyState createState() => _ReviewBodyState();
@@ -134,7 +139,13 @@ class _ReviewBodyState extends State<ReviewBody> {
           })
         });
   }
-
+  void refreshReviews(){
+    fetchReviewById(widget.game.gameId).then((value) => {
+          setState(() {
+            _review = value;
+          })
+        });
+  }
   @override
   Widget build(BuildContext context) {
     if(_review==null){

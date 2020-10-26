@@ -9,12 +9,14 @@ class RegisterSubPage extends StatefulWidget {
       {this.onSubmit,
       this.controller,
       this.fields,
-      this.children = const <TxtBox>[],
+      this.title ="",
+      this.children = const <Widget>[],
       this.isLastPage = false});
   final PageController controller;
   final Map<String, String> fields;
-  final List<TxtBox> children;
+  final List<Widget> children;
   final bool isLastPage;
+  final String title;
   final Future<Map<String, dynamic>> Function() onSubmit;
   @override
   _RegisterSubPageState createState() => _RegisterSubPageState();
@@ -81,6 +83,8 @@ class _RegisterSubPageState extends State<RegisterSubPage> {
                         curve: Curves.ease);
                   },
                 ),
+                Padding(padding: EdgeInsets.only(left:20)),
+                widget.title!=null?Text(widget.title,style: Theme.of(context).textTheme.headline2,):Container()
               ]),
               Column(
                 children: widget.children,

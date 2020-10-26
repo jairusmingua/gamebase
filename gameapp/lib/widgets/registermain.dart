@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gameapp/class/avatars.dart';
 import 'package:gameapp/widgets/txtbox.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/registersubpage.dart';
@@ -10,34 +11,35 @@ class RegisterMain extends StatefulWidget {
 }
 
 class _RegisterMainState extends State<RegisterMain> {
-   Map<String,String> _fields = {
-    "firstname":"" ,
-    "lastname":"",
-    "email":"",
-    "username":"",
-    "password":""
+  final GlobalKey<ScaffoldState> _scaffold = GlobalKey<ScaffoldState>();
+  Map<String, String> _fields = {
+    "firstname": "",
+    "lastname": "",
+    "email": "",
+    "username": "",
+    "password": ""
   };
-  void _changeField(String key,String val){
-    setState((){
+  void _changeField(String key, String val) {
+    setState(() {
       _fields[key] = val;
     });
   }
-  Future <Map<String,dynamic>>_registerUser()async{
-    
-    final response = await registerUser(_fields);
-    if(response["registered"]==true){
-      
-      return response;
-    }else{
-      throw response;
 
+  Future<Map<String, dynamic>> _registerUser() async {
+    final response = await registerUser(_fields);
+    if (response["registered"] == true) {
+      return response;
+    } else {
+      throw response;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     PageController controller =
         new PageController(initialPage: 0, keepPage: false);
     return Scaffold(
+      key: _scaffold,
       // resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false,
       body: Stack(children: [
@@ -62,43 +64,54 @@ class _RegisterMainState extends State<RegisterMain> {
               // physics: NeverScrollableScrollPhysics(),
               controller: controller,
               children: [
-                
                 RegisterSubPage(
-                  controller: controller,
-                 
-                  fields: _fields,
-                  children:[
-                    TxtBox(
-                      placeholder: "First Name",
-                      onChanged: (val){_changeField("firstname", val);}
-                    ),
-                    TxtBox(
-                      placeholder: "Last Name",
-                      onChanged: (val){_changeField("lastname", val);}
-                    ),
-                    TxtBox(
-                      placeholder: "Email",
-                      onChanged: (val){_changeField("email", val);}
-                    ),
-                  ]
-                ),
+                    controller: controller,
+                    fields: _fields,
+                    children: [
+                      TxtBox(
+                          placeholder: "First Name",
+                          onChanged: (val) {
+                            _changeField("firstname", val);
+                          }),
+                      TxtBox(
+                          placeholder: "Last Name",
+                          onChanged: (val) {
+                            _changeField("lastname", val);
+                          }),
+                      TxtBox(
+                          placeholder: "Email",
+                          onChanged: (val) {
+                            _changeField("email", val);
+                          }),
+                    ]),
                 RegisterSubPage(
-                  controller: controller,
-                  fields: _fields,
-                  isLastPage: true,
-                  onSubmit: _registerUser,
-                  children:[
-                    TxtBox(
-                      placeholder: "Username",
-                      onChanged: (val){_changeField("username", val);}
-                    ),
-                    TxtBox(
-                      placeholder: "Password",
-                      isPassword: true,
-                      onChanged: (val){_changeField("password", val);}
-                    )
-                  ]
-                )
+                    controller: controller,
+                    fields: _fields,
+                    children: [
+                      TxtBox(
+                          placeholder: "Username",
+                          onChanged: (val) {
+                            _changeField("username", val);
+                          }),
+                      TxtBox(
+                          placeholder: "Password",
+                          isPassword: true,
+                          onChanged: (val) {
+                            _changeField("password", val);
+                          })
+                    ]),
+                RegisterSubPage(
+                  title: "Select Avatar",
+                    controller: controller,
+                    fields: _fields,
+                    isLastPage: true,
+                    onSubmit: _registerUser,
+                    children: [Container(
+                      // padding: EdgeInsets.only(top:40),
+                      color: Theme.of(context).backgroundColor,
+                      height: MediaQuery.of(context).size.height-300,
+                      width: double.infinity,
+                      child: AvatarList())]),
               ],
             )),
       ]),
@@ -106,3 +119,54 @@ class _RegisterMainState extends State<RegisterMain> {
   }
 }
 
+class AvatarList extends StatefulWidget {
+  @override
+  _AvatarListState createState() => _AvatarListState();
+}
+
+class _AvatarListState extends State<AvatarList> {
+  @override
+  void initState() {
+    super.initState();
+    fetchAvatars().then((value) => print(value));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: fetchAvatars(),
+      builder: (BuildContext context, AsyncSnapshot<List<Avatar>> snapshot) {
+        if (snapshot.hasError) print(snapshot.error);
+
+        return snapshot.hasData
+            ? GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 5,
+
+                    ),
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                       
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.fitHeight,
+                              image: new NetworkImage(
+                                 convertAvatarToUrl(snapshot.data[index].name),
+                            )),
+                          
+                      )),
+                  );
+                })
+            : Center(
+                
+                child: CircularProgressIndicator(),
+              );
+      },
+    );
+  }
+}

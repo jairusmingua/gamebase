@@ -2,7 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+class User{
+  User({this.firstName, this.lastName, this.userName, this.userId, this.favoriteCount, this.reviewCount, this.imgUrl});
+  final String firstName;
+  final String lastName;
+  final String userName;
+  final String userId;
+  final String favoriteCount;
+  final String reviewCount;
+  final String imgUrl;
 
+}
 Future<Map<String,dynamic>> registerUser(Map<String,String>fields)async{
   final response = await http.post('https://gamebasebackend.azurewebsites.net/api/account/register',
   headers: <String,String>{
