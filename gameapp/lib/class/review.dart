@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gameapp/services/storage.dart';
 import 'package:http/http.dart' as http;
 import './game.dart';
 class Review{
@@ -10,13 +11,17 @@ class Review{
   final String userId;
   final String username;
   final Game game;
+  final String dateReview;
   final String reviewText;
+  final String avatar;
   final int starRating;
   Review({this.reviewId,
   this.gameId,
   this.userId,
+  this.dateReview,
   this.username,
   this.game,
+  this.avatar,
   this.reviewText,
   this.starRating});
 
@@ -25,10 +30,12 @@ class Review{
       reviewId: json["ReviewID"],
       gameId: json["GameID"],
       userId: json["UserID"],
-      username: json["UserName"],
+      username: json["UserName"], 
       game: Game.fromJson(json["Game"]),
       reviewText: json["ReviewText"],
-      starRating: json["StarRating"]
+      starRating: json["StarRating"],
+      dateReview:json["DateReview"],
+      avatar:json["Avatar"]
     );
   }
 }
@@ -54,8 +61,7 @@ Future<List<Review>> fetchReviewById(String id)async{
   } 
 }
 Future<Map<String,dynamic>> postReview(Map<String,dynamic>review,String gameId)async{
-  FlutterSecureStorage _storage = FlutterSecureStorage();
-  var token = await _storage.read(key:"token");
+  var token = await getStorage("token");
   print(token);
   Map<String,String> headers ={"Content-type": "application/json", "Accept": "application/json","Authorization":"Bearer "+token};
   
@@ -76,17 +82,14 @@ Future<Map<String,dynamic>> postReview(Map<String,dynamic>review,String gameId)a
 
   } 
 }
-Future<List<Review>> fetchUserReview()async{
+Future<List<Review>> fetchUserReview(String userId)async{
   
-  FlutterSecureStorage _storage = FlutterSecureStorage();
-  var token = await _storage.read(key:"token");
-  print(token);
-  Map<String,String> headers ={"Content-type": "application/json", "Accept": "application/json","Authorization":"Bearer "+token};
+  Map<String,String> headers ={"Content-type": "application/json", "Accept": "application/json"};
   
   // token = "goWWORBtWQqeXXqjC179meFxiIvCuhchvOlDTuRMvccLo2NS6MOlXFg6iIaaiqk0hI0VI7tWAcyeO8LlzzTHB_r48uX2nzaQZKXcHKB1z6hJbvK-VqWKoSNIbpJYS-DuC6dyztCtwyohH5on5I5dlrIxLQW8HzBz1gtGCP-OhQwalRlKCSg36aR0Uh5ZyVkUV_Gbttnc06muHWIIoIIIMsL-llGWo4MiU79Wq4Gz7A-P6sNk6hWckkpYGEWFkmMl";
   //Map<String,String> headers = {"Content-type": "application/json", "Accept": "application/json"};
   // token = "goWWORBtWQqeXXqjC179meFxiIvCuhchvOlDTuRMvccLo2NS6MOlXFg6iIaaiqk0hI0VI7tWAcyeO8LlzzTHB_r48uX2nzaQZKXcHKB1z6hJbvK-VqWKoSNIbpJYS-DuC6dyztCtwyohH5on5I5dlrIxLQW8HzBz1gtGCP-OhQwalRlKCSg36aR0Uh5ZyVkUV_Gbttnc06muHWIIoIIIMsL-llGWo4MiU79Wq4Gz7A-P6sNk6hWckkpYGEWFkmMl";
-  final response = await http.get('https://gamebasebackend.azurewebsites.net/api/review/user', headers:headers);
+  final response = await http.get('https://gamebasebackend.azurewebsites.net/api/user/reviews/'+userId, headers:headers);
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.

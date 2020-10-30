@@ -10,6 +10,8 @@ class RegisterSubPage extends StatefulWidget {
       this.controller,
       this.fields,
       this.title ="",
+      this.isFirst=false,
+      this.redirectToName,
       this.children = const <Widget>[],
       this.isLastPage = false});
   final PageController controller;
@@ -17,6 +19,8 @@ class RegisterSubPage extends StatefulWidget {
   final List<Widget> children;
   final bool isLastPage;
   final String title;
+  final bool isFirst;
+  final String redirectToName;
   final Future<Map<String, dynamic>> Function() onSubmit;
   @override
   _RegisterSubPageState createState() => _RegisterSubPageState();
@@ -37,7 +41,7 @@ class _RegisterSubPageState extends State<RegisterSubPage> {
       .onSubmit()
       .then((value)async{
         await authenticateUser(widget.fields).then((value){
-          Navigator.pushNamed(context,"/dashboard");
+          Navigator.popAndPushNamed(context,widget.redirectToName);
           setState((){
             isLoading=false;
           });
@@ -78,9 +82,13 @@ class _RegisterSubPageState extends State<RegisterSubPage> {
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   iconSize: 40,
                   onPressed: () {
-                    widget.controller.previousPage(
-                        duration: Duration(milliseconds: 500),
-                        curve: Curves.ease);
+                    if(widget.isFirst){
+                      Navigator.popAndPushNamed(context, "/notice");
+                    }else{
+                      widget.controller.previousPage(
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.ease);
+                    }
                   },
                 ),
                 Padding(padding: EdgeInsets.only(left:20)),
@@ -101,7 +109,7 @@ class _RegisterSubPageState extends State<RegisterSubPage> {
                   child: Container(
                     padding: EdgeInsets.all(8),
                     child: Text(
-                      "Next",
+                      widget.isLastPage!=true?"Next":"Register",
                       style: GoogleFonts.montserrat(
                           color: Colors.red,
                           fontSize: 20,

@@ -18,9 +18,10 @@ class Gamecard extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: InkWell(
               onTap: () {
-                Navigator.push(
+                Navigator.pushNamed(
                   context,
-                  MaterialPageRoute(builder: (context) => GamePage(game: game)),
+                  "/game",
+                  arguments:game.gameId 
                 );
               },
               child: Stack(overflow: Overflow.visible, children: <Widget>[

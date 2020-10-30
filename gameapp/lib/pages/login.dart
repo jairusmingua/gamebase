@@ -24,6 +24,12 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        elevation: 0,
+        backgroundColor: Colors.black,
+        
+      ),
       resizeToAvoidBottomPadding: false,
       body: Stack(children: [
         Container(
@@ -65,7 +71,7 @@ class Login extends StatelessWidget {
                     RaisedButton(
                       color: Colors.black,
                       onPressed: () {
-                        Navigator.pushNamed(context, "/login");
+                        Navigator.popAndPushNamed(context, "/login");
                       },
                       child: Container(
                         padding: EdgeInsets.all(8),
@@ -84,7 +90,7 @@ class Login extends StatelessWidget {
                     RaisedButton(
                       color: Colors.black,
                       onPressed: () {
-                        Navigator.pushNamed(context, "/register");
+                        Navigator.popAndPushNamed(context, "/register");
                       },
                       child: Container(
                         padding: EdgeInsets.all(8),

@@ -32,9 +32,10 @@ News List(Card List)
 ## Profile Page 🧑 ##
 Header (Sliver Header)
 
-* ❌ api callback 
+* ✅ api callback 
 * ✅ component design
-
+* ❌ edit profile
+    
 TabBarView
         
 Favorite Tab
@@ -42,13 +43,16 @@ Favorite Tab
 * ✅ component design
 
 Review Tab
-* ❌ api callback
+* ✅ api callback
 * ✅ component design
 
 - - -
 ## Settings Page 🛠 ##
 
-> No plans yet but logout button was placed already
+*  Change Password
+    * ❌ component popup
+* ✅ Logout Button
+* ✅ About Us Button
 
 - - -
 ## Game Page 🕹 ##
@@ -56,15 +60,15 @@ Review Tab
 Header (Game Infomration)
 * ✅ game information callback
 * ✅ component design
-* ❌ isFavorite callback
+* ✅ isFavorite callback
 
 Review List
-* ❌ review callback
-* ❌ component design
+* ✅ review callback
+* ✅ component design
 
 Post Review Footer
-* ❌ api call back
-* ❌ component design
+* ✅ api call back
+* ✅ component design
         
   
 

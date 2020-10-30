@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gameapp/services/storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Settings extends StatefulWidget {
@@ -12,8 +13,8 @@ class _SettingsState extends State<Settings> {
   
   GlobalKey<ScaffoldState> _scaffold = GlobalKey<ScaffoldState>();
   void _logout() async {
-    await _storage.write(key: "isLoggedIn", value: "false");
-    await _storage.delete(key: "access_token");
+    await storeStorage("isLoggedIn","false");
+    await removeStorage("token");
     Navigator.pop(_scaffold.currentContext);
   }
   void _showLogout(){

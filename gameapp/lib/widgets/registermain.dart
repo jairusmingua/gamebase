@@ -6,6 +6,8 @@ import '../widgets/registersubpage.dart';
 import '../class/user.dart';
 
 class RegisterMain extends StatefulWidget {
+  RegisterMain({this.redirectToName});
+  final String redirectToName;
   @override
   _RegisterMainState createState() => _RegisterMainState();
 }
@@ -17,12 +19,14 @@ class _RegisterMainState extends State<RegisterMain> {
     "lastname": "",
     "email": "",
     "username": "",
-    "password": ""
+    "password": "",
+    "avatar":""
   };
   void _changeField(String key, String val) {
     setState(() {
       _fields[key] = val;
     });
+    print(_fields);
   }
 
   Future<Map<String, dynamic>> _registerUser() async {
@@ -65,6 +69,7 @@ class _RegisterMainState extends State<RegisterMain> {
               controller: controller,
               children: [
                 RegisterSubPage(
+                    isFirst: true,
                     controller: controller,
                     fields: _fields,
                     children: [
@@ -101,17 +106,22 @@ class _RegisterMainState extends State<RegisterMain> {
                           })
                     ]),
                 RegisterSubPage(
-                  title: "Select Avatar",
+                    title: "Select Avatar",
                     controller: controller,
                     fields: _fields,
                     isLastPage: true,
+                    redirectToName: widget.redirectToName,
                     onSubmit: _registerUser,
-                    children: [Container(
-                      // padding: EdgeInsets.only(top:40),
-                      color: Theme.of(context).backgroundColor,
-                      height: MediaQuery.of(context).size.height-300,
-                      width: double.infinity,
-                      child: AvatarList())]),
+                    children: [
+                      Container(
+                          // padding: EdgeInsets.only(top:40),
+                          color: Theme.of(context).backgroundColor,
+                          height: MediaQuery.of(context).size.height - 300,
+                          width: double.infinity,
+                          child: AvatarList(
+                            onChange:(val)=>this._changeField("avatar",val ),
+                          ))
+                    ]),
               ],
             )),
       ]),
@@ -120,6 +130,9 @@ class _RegisterMainState extends State<RegisterMain> {
 }
 
 class AvatarList extends StatefulWidget {
+  AvatarList({this.fields,this.onChange});
+  final Map<String,String>fields;
+  final Function(String)onChange;
   @override
   _AvatarListState createState() => _AvatarListState();
 }
@@ -139,34 +152,71 @@ class _AvatarListState extends State<AvatarList> {
         if (snapshot.hasError) print(snapshot.error);
 
         return snapshot.hasData
-            ? GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 5,
-
-                    ),
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                       
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              fit: BoxFit.fitHeight,
-                              image: new NetworkImage(
-                                 convertAvatarToUrl(snapshot.data[index].name),
-                            )),
-                          
-                      )),
-                  );
-                })
+            ? SelectableGrid(
+                onClick:(Avatar avatar){widget.onChange(avatar.name);},
+                items: snapshot.data)
             : Center(
-                
                 child: CircularProgressIndicator(),
               );
       },
     );
+  }
+}
+
+class SelectableGrid extends StatefulWidget {
+  SelectableGrid({@required this.onClick, this.items});
+  final Function(Avatar) onClick;
+  final List<Avatar> items;
+
+  @override
+  _SelectableGridState createState() => _SelectableGridState();
+}
+
+class _SelectableGridState extends State<SelectableGrid> {
+  int selectedIndex = -1;
+  void _gridClick(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+    widget.onClick(widget.items[index]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 5,
+        ),
+        itemCount: widget.items.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GridTile(
+              child: InkResponse(
+                onTap: () {
+                  _gridClick(index);
+                },
+                child: Stack(
+                  children: [
+                    Container(
+                      color: index == selectedIndex ? Colors.black : null,
+                    ),
+                    Container(
+                        decoration: BoxDecoration(
+                      // color: Colors.black,
+
+                      shape: BoxShape.rectangle,
+                      image: DecorationImage(
+                          fit: BoxFit.fitHeight,
+                          image: new NetworkImage(
+                            convertAvatarToUrl(widget.items[index].name),
+                          )),
+                    )),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 }

@@ -25,6 +25,7 @@ dependencies:
   http: ^0.12.2
   intl: ^0.16.1
   flutter_secure_storage: ^3.3.5
+  universal_html: ^1.2.3
   flutter:
     sdk: flutter
 

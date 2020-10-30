@@ -97,7 +97,7 @@ class GamePageHeader extends StatelessWidget {
                           size: 20,
                           color: Colors.yellow,
                         ),
-                        Text("4/5")
+                        Text('${game.starRating}')
                       ]),
                     )
                   ],

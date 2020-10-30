@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:gameapp/pages/login.dart';
+import 'package:gameapp/services/storage.dart';
 import 'package:gameapp/widgets/loginmain.dart';
 import 'package:gameapp/widgets/registermain.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +12,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 void main() {
 
   runApp(MyApp());
+
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -19,17 +22,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    
     return MaterialApp(
       title: 'Flutter Demo',
-       
-        initialRoute: "/dashboard",
-        routes: {
-          "/dashboard":(context)=>Dashboard(),
-          "/notice": (context) => Login(),
-          "/login": (context) => LoginMain(),
-          "/register": (context) => RegisterMain(),
-          
-        },
       
       theme: ThemeData(
         // This is the theme of your application.

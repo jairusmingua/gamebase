@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gameapp/class/game.dart';
+import 'package:gameapp/pages/login.dart';
+import 'package:gameapp/services/storage.dart';
 
 class FavoriteIcon extends StatefulWidget {
   FavoriteIcon({this.game});
@@ -11,28 +13,35 @@ class FavoriteIcon extends StatefulWidget {
 class _FavoriteIconState extends State<FavoriteIcon> {
   Icon _icon;
   void onFavorite() {
-    if (_icon.color == Colors.white) {
-      favoriteGameById(widget.game.gameId).then((value) => setState(() {
-            _icon = Icon(
-              Icons.favorite,
-              color: Colors.red,
-            );
-          }));
-    } else {
-      unfavoriteGameById(widget.game.gameId).then((value) => setState(() {
-            _icon = Icon(
-              Icons.favorite,
-              color: Colors.white,
-            );
-          }));
-    }
+    getStorage("isLoggedIn").then((value){
+      if(value=="true"){
+        if (_icon.color == Colors.white) {
+          favoriteGameById(widget.game.gameId).then((value) => setState(() {
+                _icon = Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                );
+              }));
+        } else {
+          unfavoriteGameById(widget.game.gameId).then((value) => setState(() {
+                _icon = Icon(
+                  Icons.favorite,
+                  color: Colors.white,
+                );
+              }));
+        }
+
+      }else{
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>Login()));
+      }
+    });
   }
 
   @override
   void initState() {
     super.initState();
     print(widget.game.isFavorite);
-    _icon = widget.game.isFavorite == false
+    _icon = widget.game.isFavorite == false || widget.game.isFavorite  ==null
         ? Icon(
             Icons.favorite,
             color: Colors.white,

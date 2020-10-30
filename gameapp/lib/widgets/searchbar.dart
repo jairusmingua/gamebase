@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
-class Searchbar extends StatelessWidget {
+class SearchBar extends StatelessWidget {
+  SearchBar({this.onChange});
+  final Function(String) onChange;
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.fromLTRB(10, 20, 10, 5),
       margin: EdgeInsets.all(10),
-      height: 50,
+      height: 90,
       width: double.infinity,
       decoration:
           BoxDecoration(
@@ -21,6 +23,8 @@ class Searchbar extends StatelessWidget {
                 ),
       ]),
       child: TextField(
+        onChanged: onChange,
+        style: Theme.of(context).textTheme.bodyText2,
         decoration: InputDecoration(
             border: InputBorder.none, hintText: 'Enter a search term'),
       ),

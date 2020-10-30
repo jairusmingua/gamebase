@@ -10,8 +10,9 @@ import 'package:http/http.dart' as http;
 class LoginMain extends StatefulWidget {
   const LoginMain({
     Key key,
+    this.redirectToName
   }) : super(key: key);
-
+  final String redirectToName;
   @override
   _LoginMainState createState() => _LoginMainState();
 }
@@ -41,7 +42,7 @@ class _LoginMainState extends State<LoginMain> {
     };
     authenticateUser(fields).then((value){
       setState(()=>isLoading=false);
-      Navigator.pushNamed(context,"/dashboard");
+      Navigator.popAndPushNamed(context, widget.redirectToName);
     
     });
   }

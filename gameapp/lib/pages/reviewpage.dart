@@ -84,6 +84,7 @@ class _ReviewPageState extends State<ReviewPage> {
     // }
  
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       key:_scaffold,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -103,7 +104,7 @@ class _ReviewPageState extends State<ReviewPage> {
         child: Container(
           height: double.infinity,
           width: double.infinity,
-          // padding: EdgeInsets.only(top:20),
+          // padding: EdgeInts.only(top:20),
           child: SingleChildScrollView(
                       
                       controller: controller,
