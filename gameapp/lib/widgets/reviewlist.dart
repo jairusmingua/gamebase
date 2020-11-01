@@ -68,10 +68,12 @@ class ReviewCards extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 20),
                           child: Text(review.game.gameTitle),
                         ),
-                        Text(
-                          review.reviewText,
-                          style: Theme.of(context).textTheme.subtitle1,
-                          overflow: TextOverflow.fade,
+                        Flexible(
+                                                  child: Text(
+                            review.reviewText,
+                            style: Theme.of(context).textTheme.subtitle1,
+                            overflow: TextOverflow.fade,
+                          ),
                         ),
                       ]),
                 ),

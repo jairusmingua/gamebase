@@ -56,7 +56,7 @@ class _ReviewPageState extends State<ReviewPage> {
       );
     }
     else if(rating==0&&reviewLength==0){
-      _scaffold.currentState.showSnackBar(
+    _scaffold.currentState.showSnackBar(
         SnackBar(content: Text("You must put something...."),)
       );
     }

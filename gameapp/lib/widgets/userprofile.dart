@@ -24,7 +24,17 @@ class _UserProfileState extends State<UserProfile> {
       });
     });
   }
-
+  void refreshPage(){
+    setState(() {
+      userinfo=null;
+    });
+      getUser().then((User value) {
+      print(value.avatar);
+      setState(() {
+        userinfo = value;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     if (userinfo!=null){
@@ -45,11 +55,11 @@ class _UserProfileState extends State<UserProfile> {
                 headerSliverBuilder: (BuildContext context, bool isScrolled) {
                   return [
                     SliverAppBar(
-                      collapsedHeight: 300,
-                      expandedHeight: 300,
+                      collapsedHeight: 350,
+                      expandedHeight: 350,
                       automaticallyImplyLeading: false,
                       backgroundColor: Theme.of(context).backgroundColor,
-                      flexibleSpace: ProfileHeader(user: userinfo),
+                      flexibleSpace: ProfileHeader(user: userinfo,onEditProfile:refreshPage),
                     ),
                     SliverPersistentHeader(
                         floating: true,

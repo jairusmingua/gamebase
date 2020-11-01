@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:gameapp/class/avatars.dart';
+import 'package:gameapp/pages/editpage.dart';
 import '../class/user.dart';
+
 class ProfileHeader extends StatelessWidget {
-  ProfileHeader({this.user});
+  ProfileHeader({this.user,this.isGuest =false, this.onEditProfile});
   final User user;
+  final bool isGuest;
+  final Function()onEditProfile;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
-          margin: EdgeInsets.only(top: 50),
+          margin: EdgeInsets.only(top: 30),
           height: 100,
           width: 100,
           decoration: BoxDecoration(
@@ -26,6 +30,17 @@ class ProfileHeader extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyText1),
           ),
         ),
+        isGuest==false?RaisedButton(
+          onPressed: () {
+            Navigator.pushNamed(context, EditPage.routeName,arguments: user).then((value){
+              onEditProfile();
+              print(value);
+            });
+
+          },
+          color: Colors.black,
+          child: Text("Edit Profile", style: TextStyle(color: Colors.white)),
+        ):Container(),
         Padding(
           padding: const EdgeInsets.all(20),
           child: Row(

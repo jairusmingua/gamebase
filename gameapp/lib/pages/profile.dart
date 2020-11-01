@@ -8,6 +8,7 @@ import 'package:gameapp/class/game.dart';
 import 'package:gameapp/class/gameinfo.dart';
 import 'package:gameapp/class/review.dart';
 import 'package:gameapp/class/user.dart';
+import 'package:gameapp/pages/editpage.dart';
 import 'package:gameapp/services/storage.dart';
 import 'package:gameapp/widgets/loginmain.dart';
 import 'package:gameapp/widgets/registermain.dart';
@@ -67,6 +68,11 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               return MaterialPageRoute(builder: (context) {
                 return GamePage(gameId: gameId);
               });
+            }else if(settings.name == EditPage.routeName){
+              final User user = settings.arguments;
+              return MaterialPageRoute(builder:(context){
+                return EditPage(user:user);
+              });
             }
           },
           initialRoute: isLoggedIn == true ? "/userprofile" : "/notice",
@@ -75,7 +81,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             "/notice": (context) => Login(),
             "/login": (context) => LoginMain(redirectToName: initialRoute,),
             "/register": (context) => RegisterMain(redirectToName:initialRoute),
-            
           },
           theme: ThemeData(
         // This is the theme of your application.

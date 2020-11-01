@@ -8,10 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 class LoginMain extends StatefulWidget {
-  const LoginMain({
-    Key key,
-    this.redirectToName
-  }) : super(key: key);
+  const LoginMain({Key key, this.redirectToName}) : super(key: key);
   final String redirectToName;
   @override
   _LoginMainState createState() => _LoginMainState();
@@ -20,7 +17,8 @@ class LoginMain extends StatefulWidget {
 class _LoginMainState extends State<LoginMain> {
   String username;
   String password;
-  bool isLoading =false;
+  bool hasError = false;
+  bool isLoading = false;
   final storage = FlutterSecureStorage();
   void _changeUsername(String _username) {
     setState(() {
@@ -31,19 +29,21 @@ class _LoginMainState extends State<LoginMain> {
   void _changePassword(String _password) {
     setState(() {
       password = _password;
+      hasError=false;
     });
   }
-  
+
   void authenticate() async {
-    setState(()=>isLoading=true);
-    Map<String,dynamic>fields = {
-      "username":username,
-      "password":password
-    };
-    authenticateUser(fields).then((value){
-      setState(()=>isLoading=false);
+    setState(() => isLoading = true);
+    Map<String, dynamic> fields = {"username": username, "password": password};
+    authenticateUser(fields).then((value) {
+      setState(() => isLoading = false);
       Navigator.popAndPushNamed(context, widget.redirectToName);
-    
+    }).catchError((onError) {
+      setState(() {
+        isLoading = false;
+        hasError= true;
+      });
     });
   }
 
@@ -95,6 +95,8 @@ class _LoginMainState extends State<LoginMain> {
                     onChanged: _changePassword,
                     isPassword: true,
                   ),
+                  Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+                  hasError?Text("Incorrect Username or Password"):Container(),
                   Padding(padding: EdgeInsets.symmetric(vertical: 40)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -115,7 +117,8 @@ class _LoginMainState extends State<LoginMain> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 20),
-                        child: isLoading?CircularProgressIndicator():Center(),
+                        child:
+                            isLoading ? CircularProgressIndicator() : Center(),
                       )
                     ],
                   ),

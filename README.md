@@ -5,12 +5,12 @@ GameBase is a game library that lets you review games and list your favorite gam
 
 # Demo #
 Current Build Status 
-> Authentication is already established, refresh tokens is not yet implemented 
+> Almost all features are done, further polishing of ui is needed
 
 ![picture alt](images/demo.gif "Title is optional")
 
 # Tasks ⏰ #
-> The following must be finished by this week October 25, 2020
+> The following must be finished by this week November 3, 2020
 ## Home Page 🏠 ##
 
 Top Games (Card List)
@@ -26,7 +26,7 @@ Top Grossing (Card List)
 News List(Card List)
 
 * ❌ api callback
-* ❌ component design
+* ✅ component design
 
 - - -
 ## Profile Page 🧑 ##
@@ -34,7 +34,7 @@ Header (Sliver Header)
 
 * ✅ api callback 
 * ✅ component design
-* ❌ edit profile
+* ✅ edit profile
     
 TabBarView
         
@@ -50,7 +50,7 @@ Review Tab
 ## Settings Page 🛠 ##
 
 *  Change Password
-    * ❌ component popup
+    * ✅ component popup
 * ✅ Logout Button
 * ✅ About Us Button
 

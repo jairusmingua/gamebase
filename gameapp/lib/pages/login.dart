@@ -59,7 +59,7 @@ class Login extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: GoogleFonts.montserrat(
                       color: Colors.white,
-                      fontSize: 50,
+                      fontSize: MediaQuery.of(context).textScaleFactor*20,
                       fontWeight: FontWeight.w500),
                 ),
                 Padding(

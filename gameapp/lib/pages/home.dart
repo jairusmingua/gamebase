@@ -1,18 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:gameapp/class/game.dart';
+import 'package:gameapp/class/news.dart';
 import 'package:gameapp/class/user.dart';
 import 'package:gameapp/pages/gamepage.dart';
+import 'package:gameapp/pages/newspage.dart';
 import 'package:gameapp/services/storage.dart';
 import 'package:gameapp/widgets/homeicon.dart';
 import 'package:gameapp/widgets/loginmain.dart';
 import 'package:gameapp/widgets/registermain.dart';
 import 'package:gameapp/widgets/searchbar.dart';
-import '../class/gamelist.dart';
+import 'dart:math' as math;
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/gamecard.dart';
 import 'login.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:url_launcher/url_launcher.dart';
 // import 'game.dart';
 
 class Home extends StatelessWidget {
@@ -119,7 +123,13 @@ class _HomeMainState extends State<HomeMain> {
                     RawMaterialButton(
                       onPressed: () {
                         showDialog(
-                            context: context, builder: (_) => SearchOverlay());
+                            context: context,
+                            builder: (_) => SearchOverlay()).then((value) {
+                          if (value != null) {
+                            Navigator.pushNamed(context, GamePage.routeName,
+                                arguments: value);
+                          }
+                        });
                       },
                       child: Icon(
                         Icons.search,
@@ -178,20 +188,24 @@ class SearchOverlay extends StatefulWidget {
 }
 
 class _SearchOverlayState extends State<SearchOverlay> {
-  List<Game>results;
-  bool isLoading=false;
-  void _onSearch(String query){
+  List<Game> results;
+  bool isLoading = false;
+  void _onSearch(String query) {
     setState(() {
-      isLoading=true;
+      isLoading = true;
     });
-    searchGame(query).then((value){
-      setState((){
+    searchGame(query).then((value) {
+      setState(() {
         results = value;
-        isLoading=false;
+        isLoading = false;
       });
-    });  
-
+    });
   }
+
+  void _onResultClick(String gameId) {
+    Navigator.pop(this.context, gameId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -200,32 +214,38 @@ class _SearchOverlayState extends State<SearchOverlay> {
         width: double.infinity,
         height: double.infinity,
         // color:Colors.black87,
-        child: SafeArea(
-          minimum: EdgeInsets.only(top:30),
-          child: Scaffold(
-            appBar: AppBar(
-              toolbarHeight: 70,
-              backgroundColor: Colors.transparent,
-              automaticallyImplyLeading: false,
-              
-              flexibleSpace: SearchBar(onChange: _onSearch,),),
-            backgroundColor: Colors.black45,
-            body: Container(child: isLoading==true?
-              Center(child:CircularProgressIndicator()):(results==null?Container():
-              ListView.builder(
-                itemCount: results.length,
-                itemBuilder: (context,index){
-                  return Container(
-                    padding: EdgeInsets.all(10),
-                    color: Colors.white,
-                    child: ListTile(
-                      title:Text(results[index].gameTitle,style:Theme.of(context).textTheme.bodyText2,)
-                      ),
-                  );
-              }))
-            
+        child: Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 100,
+            backgroundColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            flexibleSpace: SearchBar(
+              onChange: _onSearch,
             ),
           ),
+          backgroundColor: Colors.black45,
+          body: Container(
+              child: isLoading == true
+                  ? Center(child: CircularProgressIndicator())
+                  : (results == null
+                      ? Container()
+                      : ListView.builder(
+                          itemCount: results.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              padding: EdgeInsets.all(10),
+                              color: Colors.white,
+                              child: ListTile(
+                                  onTap: () {
+                                    _onResultClick(results[index].gameId);
+                                  },
+                                  title: Text(
+                                    results[index].gameTitle,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                  )),
+                            );
+                          }))),
         ),
       ),
     );
@@ -298,34 +318,126 @@ class _CardlistState extends State<Cardlist> {
 
 class Newslist extends StatelessWidget {
   Newslist({Key key}) : super(key: key);
+  final List<News> newsList = [
+    News(
+        newsId: '009ffa1e-b182-4236-bd52-89c2868f402c',
+        articleTitle:
+            'PS5 Preorder Guide: Consoles Sold Out For Now, Some Accessories Available',
+        newsUrl:
+            'https://www.gamespot.com/articles/ps5-preorder-guide-consoles-sold-out-for-now-some-accessories-available/1100-6475811/',
+        newsThumbnail:
+            'https://gamespot1.cbsistatic.com/uploads/screen_kubrick/1591/15918215/3735420-ps5thumb3%281%29.jpg'),
+    News(
+        newsId: '009ffa1e-b182-4236-bd52-89c2868f402c',
+        articleTitle:
+            'CD Projekt Red Has Lost Billions Owing to Cyberpunk 2077 Delays',
+        newsUrl:
+            'https://www.essentiallysports.com/cd-projekt-red-has-lost-billions-owing-to-cyberpunk-2077-delays-esports-news/',
+        newsThumbnail:
+            'https://image-cdn.essentiallysports.com/wp-content/uploads/20201028144137/cyberpunk-2077-is-delayed-again-to-december-1600x900.jpg'),
+    News(
+        newsId: '009ffa1e-b182-4236-bd52-89c2868f402c',
+        articleTitle:
+            'AMD Reveals More Radeon RX 6000 Series vs. Nvidia RTX 3000 Benchmarks',
+        newsUrl:
+            'https://www.pcmag.com/news/amd-reveals-more-radeon-rx-6000-series-vs-nvidia-rtx-3000-benchmarks',
+        newsThumbnail:
+            'https://sm.pcmag.com/t/pcmag_ap/news/a/amd-reveal/amd-reveals-more-radeon-rx-6000-series-vs-nvidia-rtx-3000-be_82gh.1920.jpg'),
+    News(
+        newsId: '009ffa1e-b182-4236-bd52-89c2868f402c',
+        articleTitle:
+            'Daily Crunch: Facebook launches cloud gaming service',
+        newsUrl:
+            'https://techcrunch.com/2020/10/26/daily-crunch-facebook-launches-cloud-gaming-service/?guccounter=1&guce_referrer=aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS5waC8&guce_referrer_sig=AQAAAMKczfrYBeaQiPk-A7g6f1i-0c4V3Tu3uvcso36ANJtGzf6oCl5100us5cI5MVTGHOhHwtQqfVfRsRu2wenMNTK4A5fueZiRNmCFy_LDPtRxxyM7rhXRLTv_xWTwmvUShTZJtVUTNVY3THWjVph9vPLx1-lfBt6h6lBTxofR1hjj',
+        newsThumbnail:
+            'https://techcrunch.com/wp-content/uploads/2020/08/GettyImages-1026686014.jpg?w=1390&crop=1'),
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
+      return Container(
+        padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+        child: Material(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.black,
+            child: InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: () {
+                  if(kIsWeb){
+                    launch(newsList[index].newsUrl);
+                  }else{
+                    Navigator.push(context,MaterialPageRoute(builder: (_){
+                      return NewsPage(newsUrl: newsList[index].newsUrl,);
+                    }));
+                  }
+                },
+                child: NewsTile(
+                  news: newsList[index],
+                ))),
+      );
+    }, childCount: newsList.length));
+  }
+}
+
+class NewsTile extends StatelessWidget {
+  final News news;
+  List<Color> colors =[
+    Colors.red,
+    Colors.orange,
+    Colors.blue,
+    Colors.green,
+    Colors.purple,
+    Colors.yellow[900],
+    Colors.amber,
+    Colors.pink,
+    Colors.brown,
+    Colors.cyan,
+    Colors.teal,
+
+  ];
+  int randomColor;
+  NewsTile({this.news}){
+    randomColor = int.parse(news.articleTitle[0].codeUnitAt(0).toString()[1]);
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    int count = 2;
-    GameList game = new GameList();
-    MediaQueryData query;
-    query = MediaQuery.of(context);
-    int ratio = 274;
-    if (((query.size.width.toInt() ~/ ratio) + 1) > 7) {
-      count = 7;
-    } else if (((query.size.width.toInt() ~/ ratio) + 1) < 2) {
-      count = 2;
-    } else {
-      count = (query.size.width.toInt() ~/ ratio) + 1;
-    }
-    print((query.size.width.toInt() ~/ ratio) + 1);
-    print(count);
-    return SliverGrid(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: count,
-        // mainAxisSpacing: 1,
-        // crossAxisSpacing: 5,
-      ),
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          return Gamecard(game: game.Games[index]);
-        },
-        childCount: game.Games.length,
+    print(news.articleTitle[0]);
+    print(int.parse(news.articleTitle[0].codeUnitAt(0).toString()[1]));
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.15,
+      width: double.infinity,
+      // color:Colors.black,
+      
+      child: Row(
+        children: [
+          Flexible(
+              flex: 9,
+              child: Container(
+                margin: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(news.newsThumbnail))),
+              )),
+          Flexible(
+            flex: 25,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(news.articleTitle,
+                  style: Theme.of(context).textTheme.bodyText1),
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: Container(
+              color: colors[randomColor]
+            )
+          ),
+        ],
       ),
     );
   }

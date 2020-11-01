@@ -51,7 +51,7 @@ class _GuestProfileState extends State<GuestProfile> {
                       expandedHeight: 300,
                       automaticallyImplyLeading: false,
                       backgroundColor: Theme.of(context).backgroundColor,
-                      flexibleSpace: ProfileHeader(user: userinfo),
+                      flexibleSpace: ProfileHeader(user: userinfo,isGuest: true,),
                     ),
                     SliverPersistentHeader(
                         floating: true,
