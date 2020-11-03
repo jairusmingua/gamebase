@@ -17,11 +17,8 @@ jobs:
       working-directory: gameapp
     - run: flutter build web
       working-directory: gameapp
-    - name: Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@3.7.1
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
       with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: master # The branch the action should deploy to.
-          FOLDER: gameapp/build/web # The folder the action should deploy.
-          REPOSITORY_NAME: jairusmingua/jairusmingua.github.io 
-          CLEAN: true # Automatically remove deleted files from the deploy branch
+          name: dist-without-markdown
+          path: gameapp/build/web
