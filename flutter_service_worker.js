@@ -12,10 +12,10 @@ const RESOURCES = {
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "115e937bb829a890521f72d2e664b632",
 "assets/AssetManifest.json": "d385b6b02250f5d78fe88f18423ea46e",
 "manifest.json": "43bd0c21a41dba97441bebd389b61abd",
-"main.dart.js": "b6f1dba25324c0a82143378c6fc2ff8f",
+"main.dart.js": "b471415f685c5aa979f4cb6053c9b8b7",
 "version.json": "42b89e98c22b15c7bcb7d8c65f4a5af3",
-"index.html": "06b47dd66754d9fee10068ceda965328",
-"/": "06b47dd66754d9fee10068ceda965328",
+"index.html": "91b3b3efc08bdca59ec4e8391fe0638e",
+"/": "91b3b3efc08bdca59ec4e8391fe0638e",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1"
 };
