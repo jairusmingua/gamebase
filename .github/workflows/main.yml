@@ -1,0 +1,19 @@
+name: Build Web and Deploy
+on:
+  push:
+    branches: 
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: subosito/flutter-action@v1.4.0
+      with:
+        channel: beta
+    - run: flutter config --enable-web
+      working-directory: gameapp
+    - run: flutter pub get
+      working-directory: gameapp
+    - run: flutter build web
+      working-directory: gameapp
