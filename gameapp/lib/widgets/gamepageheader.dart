@@ -25,6 +25,11 @@ class GamePageHeader extends StatelessWidget {
               fit: BoxFit.fitWidth
               )),
         ),
+        Positioned.fill(
+          child:Container(
+            color: Colors.black54,
+          )
+        ),
         // Positioned(
         //   child: ClipRect(
         //     child: BackdropFilter(

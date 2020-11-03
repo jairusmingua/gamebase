@@ -18,14 +18,14 @@ Top Games (Card List)
 * ✅ api callback
 * ✅ component design 
         
-Top Grossing (Card List)
+New Releases (Card List)
 
-* ❌ api callback
+* ✅ api callback
 * ✅ component design 
 
 News List(Card List)
 
-* ❌ api callback
+* ✅ api callback
 * ✅ component design
 
 - - -
@@ -71,4 +71,6 @@ Post Review Footer
 * ✅ component design
         
   
-
+SearchPage
+* ✅ api call back
+* ✅ component design

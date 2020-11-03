@@ -161,7 +161,7 @@ class _HomeMainState extends State<HomeMain> {
               ),
             ),
             Cardlist(title: "Top Games", apiroute: "/topgames"),
-            Cardlist(title: "Top Grossing", apiroute: "/grossing"),
+            Cardlist(title: "New Release", apiroute: "/newrelease"),
             Container(
               margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
               alignment: Alignment.topLeft,
@@ -292,7 +292,7 @@ class _CardlistState extends State<Cardlist> {
           child: Stack(
             children: <Widget>[
               FutureBuilder<List<Game>>(
-                future: fetchGameList("game/topgames"),
+                future: fetchGameList("game"+widget.apiroute),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) print(snapshot.error);
 
@@ -316,44 +316,39 @@ class _CardlistState extends State<Cardlist> {
   }
 }
 
-class Newslist extends StatelessWidget {
+class Newslist extends StatefulWidget {
   Newslist({Key key}) : super(key: key);
-  final List<News> newsList = [
-    News(
-        newsId: '009ffa1e-b182-4236-bd52-89c2868f402c',
-        articleTitle:
-            'PS5 Preorder Guide: Consoles Sold Out For Now, Some Accessories Available',
-        newsUrl:
-            'https://www.gamespot.com/articles/ps5-preorder-guide-consoles-sold-out-for-now-some-accessories-available/1100-6475811/',
-        newsThumbnail:
-            'https://gamespot1.cbsistatic.com/uploads/screen_kubrick/1591/15918215/3735420-ps5thumb3%281%29.jpg'),
-    News(
-        newsId: '009ffa1e-b182-4236-bd52-89c2868f402c',
-        articleTitle:
-            'CD Projekt Red Has Lost Billions Owing to Cyberpunk 2077 Delays',
-        newsUrl:
-            'https://www.essentiallysports.com/cd-projekt-red-has-lost-billions-owing-to-cyberpunk-2077-delays-esports-news/',
-        newsThumbnail:
-            'https://image-cdn.essentiallysports.com/wp-content/uploads/20201028144137/cyberpunk-2077-is-delayed-again-to-december-1600x900.jpg'),
-    News(
-        newsId: '009ffa1e-b182-4236-bd52-89c2868f402c',
-        articleTitle:
-            'AMD Reveals More Radeon RX 6000 Series vs. Nvidia RTX 3000 Benchmarks',
-        newsUrl:
-            'https://www.pcmag.com/news/amd-reveals-more-radeon-rx-6000-series-vs-nvidia-rtx-3000-benchmarks',
-        newsThumbnail:
-            'https://sm.pcmag.com/t/pcmag_ap/news/a/amd-reveal/amd-reveals-more-radeon-rx-6000-series-vs-nvidia-rtx-3000-be_82gh.1920.jpg'),
-    News(
-        newsId: '009ffa1e-b182-4236-bd52-89c2868f402c',
-        articleTitle:
-            'Daily Crunch: Facebook launches cloud gaming service',
-        newsUrl:
-            'https://techcrunch.com/2020/10/26/daily-crunch-facebook-launches-cloud-gaming-service/?guccounter=1&guce_referrer=aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS5waC8&guce_referrer_sig=AQAAAMKczfrYBeaQiPk-A7g6f1i-0c4V3Tu3uvcso36ANJtGzf6oCl5100us5cI5MVTGHOhHwtQqfVfRsRu2wenMNTK4A5fueZiRNmCFy_LDPtRxxyM7rhXRLTv_xWTwmvUShTZJtVUTNVY3THWjVph9vPLx1-lfBt6h6lBTxofR1hjj',
-        newsThumbnail:
-            'https://techcrunch.com/wp-content/uploads/2020/08/GettyImages-1026686014.jpg?w=1390&crop=1'),
-  ];
+
+  @override
+  _NewslistState createState() => _NewslistState();
+}
+
+class _NewslistState extends State<Newslist> {
+  List<News>_news;
+
+  @override
+  void initState(){
+    super.initState();
+    fetchNews().then((value){
+      setState((){
+        _news = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if(_news==null){
+      return SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
+      return Center(
+        // padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+        child: CircularProgressIndicator()
+      );
+    }, childCount: 1));
+    }    
+    else{
+
     return SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
       return Container(
@@ -365,18 +360,19 @@ class Newslist extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 onTap: () {
                   if(kIsWeb){
-                    launch(newsList[index].newsUrl);
+                    launch(_news[index].newsUrl);
                   }else{
                     Navigator.push(context,MaterialPageRoute(builder: (_){
-                      return NewsPage(newsUrl: newsList[index].newsUrl,);
+                      return NewsPage(newsUrl: _news[index].newsUrl,);
                     }));
                   }
                 },
                 child: NewsTile(
-                  news: newsList[index],
+                  news: _news[index],
                 ))),
       );
-    }, childCount: newsList.length));
+    }, childCount: _news.length));
+    }
   }
 }
 
@@ -408,10 +404,11 @@ class NewsTile extends StatelessWidget {
     print(int.parse(news.articleTitle[0].codeUnitAt(0).toString()[1]));
     return Container(
       height: MediaQuery.of(context).size.height * 0.15,
-      width: double.infinity,
+      // width: 500,
       // color:Colors.black,
       
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Flexible(
               flex: 9,
@@ -427,12 +424,16 @@ class NewsTile extends StatelessWidget {
             flex: 25,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(news.articleTitle,
-                  style: Theme.of(context).textTheme.bodyText1),
+              child: Container(
+                width: double.infinity,
+                child: Text(news.articleTitle,
+                    style: Theme.of(context).textTheme.bodyText1),
+              ),
             ),
           ),
           Flexible(
-            flex: 1,
+            flex:1,
+            fit:FlexFit.tight,
             child: Container(
               color: colors[randomColor]
             )

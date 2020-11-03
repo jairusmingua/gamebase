@@ -39,7 +39,7 @@ List<Game> parseGame(String responseBody) {
 Future<List<Game>> fetchGameList(String route)async{
   // Map <String,String> userHeader = {"Content-type": "application/json", "Accept": "application/json"};
   
-  final response = await http.get('https://gamebasebackend.azurewebsites.net/api/game/topgames',headers:<String,String>{"Content-type": "application/json", "Accept": "application/json"} );
+  final response = await http.get('https://gamebasebackend.azurewebsites.net/api/'+route,headers:<String,String>{"Content-type": "application/json", "Accept": "application/json"} );
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
