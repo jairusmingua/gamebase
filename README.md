@@ -7,7 +7,7 @@ GameBase is a game library that lets you review games and list your favorite gam
 Current Build Status 
 > Almost all features are done, further polishing of ui is needed
 
-![picture alt](images/demo.gif "Title is optional")
+![picture alt](https://github.com/jairusmingua/gamebase/blob/master/images/demo.gif?raw=true "Title is optional")
 
 # Tasks ⏰ #
 > The following must be finished by this week November 3, 2020
