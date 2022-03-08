@@ -1,7 +1,7 @@
 # GameBase 🎮 #
 
 A flutter application that serves as a front-end application for GameBase.
-GameBase is a game library that lets you review games and list your favorite games.
+GameBase is a game library that lets you review games and list your favorite games [check demo](https://jairusmingua.github.io/gamebase).
 
 # Demo #
 Current Build Status 
